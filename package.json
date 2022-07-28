@@ -17,7 +17,7 @@
     "@vue/compiler-sfc": "^3.2.37",
     "sass": "^1.53.0",
     "typescript": "^4.7.4",
-    "unplugin-element-plus": "workspace:*",
+    "unplugin-element-plus": "^0.4.1",
     "vite": "^3.0.2",
     "vite-plugin-inspect": "^0.6.0",
     "vue-tsc": "^0.38.8"
