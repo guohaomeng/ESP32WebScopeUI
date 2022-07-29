@@ -19,6 +19,9 @@ import { LineChart, LineSeriesOption } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import { onMounted } from 'vue';
+import WaveGenData from './WaveGen.vue'
+import { EChartsType } from 'echarts/core';
+import WaveGenVue from './WaveGen.vue';
 
 echarts.use([
   ToolboxComponent,
@@ -60,19 +63,7 @@ const props = defineProps({
 });
 
 var option: EChartsOption;
-
-function func(x: number) {
-  x /= 10;
-  return Math.sin(x) * 3.3;
-}
-
-function generateData() {
-  let data = [];
-  for (let i = 0; i <= 300; i += 1) {
-    data.push([i, func(i)]);
-  }
-  return data;
-}
+var myChart: EChartsType;
 
 option = {
   animation: false,
@@ -106,7 +97,7 @@ option = {
     }
   },
   xAxis: {
-    name: 'x',
+    name: '波形索引',
     min: 0,
     max: 256,
     minorTick: {
@@ -117,9 +108,9 @@ option = {
     }
   },
   yAxis: {
-    name: 'y',
-    min: -5,
-    max: 5,
+    name: '输出电压/V',
+    min: -0.2,
+    max: 3.5,
     minorTick: {
       show: true
     },
@@ -133,16 +124,18 @@ option = {
       type: 'inside',
       filterMode: 'filter',
       xAxisIndex: [0],
-      startValue: -20,
-      endValue: 20
+      startValue: 0,
+      endValue: 300
     },
     {
       show: true,
       type: 'inside',
+      disabled: true,
+      zoomLock: true,
       filterMode: 'empty',
       yAxisIndex: [0],
-      startValue: -20,
-      endValue: 20
+      startValue: -1,
+      endValue: 5
     }
   ],
   series: [
@@ -150,14 +143,99 @@ option = {
       type: 'line',
       showSymbol: false,
       clip: true,
-      data: generateData()
+      data: []
     }
   ]
 };
 
+// 绘制预览波形相关变量及函数
+var start = true;
+let uMaxValue = 3.3;    //峰峰值
+let offSetValue = 1.65; //偏置电压
+let duty = 50;             //占空比%(方波)
+let wave = 1;              //波形种类
+let samplePerCycle = 256;
+//定义板载8位DAC输出的对应值
+var waveTab1 = new Array();
+var waveTab = new Array();
+
+
+function wave_gen(index: number) {
+  if (index == 1) {
+    var sineValue = 0.0;
+    for (var i = 0; i < samplePerCycle; i++) {
+      sineValue = Math.sin(((2 * Math.PI) / samplePerCycle) * i) * (uMaxValue / 2) + offSetValue;
+      waveTab1[i] = (((sineValue * 255 / 3.3)));
+    }
+    console.log("波形表重设成功，当前为正弦波\n");
+  }
+  else if (index == 2) {
+    var x = samplePerCycle * (duty / 100.0);
+    var x1 = x;
+    for (var i = 0; i < samplePerCycle; i++) {
+      if (i < x) {
+        waveTab1[i] = (255 * (uMaxValue / 2 + offSetValue) / 3.3);
+      }
+      else {
+        waveTab1[i] = (255 * (-(uMaxValue / 2) + offSetValue) / 3.3);
+      }
+    }
+    console.log("波形表重设成功，当前为方波,占空比:" + duty + "\n");
+  }
+  else if (index == 3) //锯齿波
+  {
+    for (var i = -127; i < 128; i++) {
+      waveTab1[i + 127] = ((i + (offSetValue * 255 / 3.3)) * (uMaxValue / 3.3));
+
+    }
+    console.log("波形表重设成功，当前为锯齿波\n");
+  }
+  for (var i = 0; i < samplePerCycle; i++) {
+    if (waveTab1[i] > 255) {
+      waveTab1[i] = 255;
+    }
+    if (waveTab1[i] < 0) {
+      waveTab1[i] = 0;
+    }
+    waveTab[i] = waveTab1[i] * 3.3 / 255;
+
+  }
+  console.log(waveTab);
+}
+
+function generateData() {
+  let data = [];
+  for (let i = 0; i <= 256; i++) {
+    data.push([i, waveTab[i]]);
+  }
+  return data;
+}
+
+function refreshData() {
+  wave = parseInt(WaveGenData.waveType);
+  offSetValue = WaveGenData.biasVoltage;
+  duty = WaveGenData.duty;
+  uMaxValue = WaveGenData.uMaxValue;
+  wave_gen(wave);
+  //刷新数据
+  if (start === true) {
+    myChart.setOption({
+      series: [
+        {
+          data: generateData()
+        }
+      ]
+    });
+  }
+}
+
+
+
 onMounted(() => {
+  wave_gen(1);
   var chartDom = document.getElementById(props.container) as HTMLElement
-  var myChart = echarts.init(chartDom);
+  myChart = echarts.init(chartDom);
+  option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
   option && myChart.setOption(option);
 })
 
@@ -180,6 +258,7 @@ export default {
 }
 
 </script>
+
 
 <style>
 .WaveGenChart {

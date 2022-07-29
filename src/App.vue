@@ -1,6 +1,5 @@
 <template>
   <div class="container" style="justify-content:normal;">
-
     <el-row>
       <!-- 左半屏幕 -->
       <el-col :span="12">
@@ -25,7 +24,6 @@
 
       </el-col>
     </el-row>
-
   </div>
 </template>
 <style>

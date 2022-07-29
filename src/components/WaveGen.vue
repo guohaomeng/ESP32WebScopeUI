@@ -51,6 +51,7 @@ import {
 } from 'element-plus'
 
 import { reactive } from 'vue'
+import { number } from "echarts/core";
 
 defineProps<{ msg: string }>();
 
@@ -94,6 +95,11 @@ const biasChange = (value: number) => {
 <script lang="ts">
 export default {
   name: "WaveGen",
+  waveType: String,
+  freq: number,
+  duty: number,
+  uMaxValue: number,
+  biasVoltage: number,
   props1: {
     msg: String
   }
@@ -108,11 +114,12 @@ export default {
   font-size: 2em;
 }
 
-.el-input-number  {
+.el-input-number {
   width: 100%;
   min-width: 200px;
 }
-.el-select{
+
+.el-select {
   width: 100%;
   min-width: 200px;
 }
