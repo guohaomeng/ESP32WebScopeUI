@@ -103,7 +103,7 @@ export default {
 <style>
 .waveGen {
   width: 50%;
-  height: 100%;
+  height: auto;
   margin: 0 auto;
   font-size: 2em;
 }
