@@ -11,7 +11,7 @@
           <el-option label="锯齿波" value="3"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="频率" style="width:100%s">
+      <el-form-item label="频率" style="width:100%">
         <el-input-number v-model="freq" @change="freqChange(freq)" :min="1" :max="1500" :step="1" label="频率">
         </el-input-number>
       </el-form-item>
@@ -28,8 +28,8 @@
           :step="0.2" label="频率"></el-input-number>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit" style="width: 40%; margin-right: 5%;">立即设置</el-button>
-        <el-button style="width: 40%; margin-left: 0%;">取消</el-button>
+        <el-button type="primary" @click="onSubmit" style="width: 45%; margin-right: 5%;">立即设置</el-button>
+        <el-button style="width: 45%; margin-left: 5%;">取消</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -108,7 +108,7 @@ export default {
 
 <style>
 .waveGen {
-  width: 50%;
+  width: 55%;
   height: auto;
   margin: 0 auto;
   font-size: 2em;

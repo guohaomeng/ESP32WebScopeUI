@@ -134,7 +134,7 @@ option = {
     {
       show: true,
       type: 'inside',
-      filterMode: 'filter',
+      filterMode: 'none',
       xAxisIndex: [0],
       startValue: 0,
       endValue: 300,
@@ -145,7 +145,7 @@ option = {
       type: 'inside',
       // disabled: true,
       // zoomLock: true,
-      filterMode: 'empty',
+      filterMode: 'none',
       yAxisIndex: [0],
       startValue: -1,
       endValue: 5
@@ -197,8 +197,7 @@ function wave_gen(index: number) {
   else if (index == 3) //锯齿波
   {
     for (var i = -128; i < 128; i++) {
-      waveTab1[i + 128] = ((i + (offSetValue * 255 / 3.3)) * (uMaxValue / 3.3));
-
+      waveTab1[i + 128] = (i * (uMaxValue / 3.3) + (offSetValue * 255 / 3.3));
     }
     console.log("波形表重设成功，当前为锯齿波\n");
   }
