@@ -21,26 +21,8 @@ import { CanvasRenderer } from 'echarts/renderers';
 import { onMounted } from 'vue';
 import WaveGenData from './WaveGen.vue'
 import { EChartsType } from 'echarts/core';
-import WaveGenVue from './WaveGen.vue';
 
-echarts.use([
-  ToolboxComponent,
-  TooltipComponent,
-  GridComponent,
-  DataZoomComponent,
-  LineChart,
-  CanvasRenderer,
-  UniversalTransition
-]);
-
-type EChartsOption = echarts.ComposeOption<
-  | ToolboxComponentOption
-  | TooltipComponentOption
-  | GridComponentOption
-  | DataZoomComponentOption
-  | LineSeriesOption
->;
-// 2.定义传入的参数
+// 定义传入的参数
 const props = defineProps({
   width: {
     type: String,
@@ -62,10 +44,40 @@ const props = defineProps({
   },
 });
 
+onMounted(() => {
+  wave_gen(1);
+  chartDom = document.getElementById(props.container) as HTMLElement
+  myChart = echarts.init(chartDom);
+  option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
+  option && myChart.setOption(option);
+});
+</script>
+
+<script lang="ts">
+
+echarts.use([
+  ToolboxComponent,
+  TooltipComponent,
+  GridComponent,
+  DataZoomComponent,
+  LineChart,
+  CanvasRenderer,
+  UniversalTransition
+]);
+
+type EChartsOption = echarts.ComposeOption<
+  | ToolboxComponentOption
+  | TooltipComponentOption
+  | GridComponentOption
+  | DataZoomComponentOption
+  | LineSeriesOption
+>;
+
 var option: EChartsOption;
 var myChart: EChartsType;
-
+var chartDom: HTMLElement;
 option = {
+  backgroundColor: '',
   animation: false,
   grid: {
     top: 40,
@@ -125,13 +137,14 @@ option = {
       filterMode: 'filter',
       xAxisIndex: [0],
       startValue: 0,
-      endValue: 300
+      endValue: 300,
+      moveOnMouseWheel: 'alt'
     },
     {
       show: true,
       type: 'inside',
-      disabled: true,
-      zoomLock: true,
+      // disabled: true,
+      // zoomLock: true,
       filterMode: 'empty',
       yAxisIndex: [0],
       startValue: -1,
@@ -150,15 +163,14 @@ option = {
 
 // 绘制预览波形相关变量及函数
 var start = true;
-let uMaxValue = 3.3;    //峰峰值
-let offSetValue = 1.65; //偏置电压
-let duty = 50;             //占空比%(方波)
-let wave = 1;              //波形种类
+let uMaxValue = 3.3;         //峰峰值
+let offSetValue = 1.65       //偏置电压
+let duty = 50;               //占空比%(方波)
+let wave = 1;                //波形种类
 let samplePerCycle = 256;
 //定义板载8位DAC输出的对应值
 var waveTab1 = new Array();
 var waveTab = new Array();
-
 
 function wave_gen(index: number) {
   if (index == 1) {
@@ -184,8 +196,8 @@ function wave_gen(index: number) {
   }
   else if (index == 3) //锯齿波
   {
-    for (var i = -127; i < 128; i++) {
-      waveTab1[i + 127] = ((i + (offSetValue * 255 / 3.3)) * (uMaxValue / 3.3));
+    for (var i = -128; i < 128; i++) {
+      waveTab1[i + 128] = ((i + (offSetValue * 255 / 3.3)) * (uMaxValue / 3.3));
 
     }
     console.log("波形表重设成功，当前为锯齿波\n");
@@ -200,7 +212,7 @@ function wave_gen(index: number) {
     waveTab[i] = waveTab1[i] * 3.3 / 255;
 
   }
-  console.log(waveTab);
+  // console.log(waveTab);
 }
 
 function generateData() {
@@ -212,10 +224,10 @@ function generateData() {
 }
 
 function refreshData() {
-  wave = parseInt(WaveGenData.waveType);
-  offSetValue = WaveGenData.biasVoltage;
-  duty = WaveGenData.duty;
-  uMaxValue = WaveGenData.uMaxValue;
+  offSetValue = WaveGenData.biasVoltage.value;
+  duty = WaveGenData.duty.value;
+  uMaxValue = WaveGenData.uMaxValue.value;
+  wave = parseInt(WaveGenData.waveType.value);
   wave_gen(wave);
   //刷新数据
   if (start === true) {
@@ -229,32 +241,26 @@ function refreshData() {
   }
 }
 
+function darkMode(isDark: boolean) {
+  myChart.dispose();
+  if (isDark == true)
+    myChart = echarts.init(chartDom, 'dark');
+  else
+    myChart = echarts.init(chartDom);
+  myChart.setOption(option);
+  refreshData();
+}
 
-
-onMounted(() => {
-  wave_gen(1);
-  var chartDom = document.getElementById(props.container) as HTMLElement
-  myChart = echarts.init(chartDom);
-  option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
-  option && myChart.setOption(option);
-})
-
-</script>
-
-<script lang="ts">
 export default {
   name: "WaveGenChart",
-  props2: {
-    msg: String,
-    option: Object
-  },
-  darkMode(isDark: boolean) {
-    let chartDom1 = document.getElementById(this.container) as HTMLElement
-    if (isDark)
-      var chart = echarts.init(chartDom1, 'dark');
-    else
-      var chart = echarts.init(chartDom1);
-  }
+  option,
+  myChart,
+  uMaxValue,
+  offSetValue,
+  duty,
+  wave,
+  refreshData,
+  darkMode
 }
 
 </script>

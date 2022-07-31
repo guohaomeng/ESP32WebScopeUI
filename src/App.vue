@@ -12,7 +12,8 @@
       <el-col :span="12">
         <el-row justify="end" style="height:32px;">
           <el-form-item label="深色模式">
-            <el-switch v-model="switchVal" @change="toggleDark()" inline-prompt active-text="开" inactive-text="关" />
+            <el-switch v-model="switchVal" @change="toggleDark(), UseDarkMode()" inline-prompt active-text="开"
+              inactive-text="关" />
           </el-form-item>
         </el-row>
         <el-row>
@@ -50,15 +51,19 @@ import {
 import { useDark, useToggle } from '@vueuse/core'
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
+let switchVal = ref(isDark.value)
 
-const switchVal = ref(false)
-
+function UseDarkMode() {
+  WaveGenChart.darkMode(isDark.value);
+  OSChart.darkMode(isDark.value);
+};
 
 </script>
 <script lang="ts">
 import WaveGen from './components/WaveGen.vue'
 import WaveGenChart from './components/WaveGenChart.vue'
 import OSChart from './components/OSChart.vue'
+
 export default {
   name: 'App',
   components: {

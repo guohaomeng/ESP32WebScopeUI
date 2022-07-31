@@ -19,6 +19,7 @@ import { LineChart, LineSeriesOption } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import { onMounted } from 'vue';
+import { EChartsType } from 'echarts/core';
 
 echarts.use([
   ToolboxComponent,
@@ -30,13 +31,7 @@ echarts.use([
   UniversalTransition
 ]);
 
-type EChartsOption = echarts.ComposeOption<
-  | ToolboxComponentOption
-  | TooltipComponentOption
-  | GridComponentOption
-  | DataZoomComponentOption
-  | LineSeriesOption
->;
+
 // 2.定义传入的参数
 const props = defineProps({
   width: {
@@ -55,11 +50,31 @@ const props = defineProps({
   //组件唯一值
   container: {
     type: String,
-    default: "WaveGenChart",
+    default: "OSCChart",
   },
 });
 
+
+
+onMounted(() => {
+  chartDom = document.getElementById(props.container) as HTMLElement
+  myChart = echarts.init(chartDom);
+  option && myChart.setOption(option);
+})
+
+</script>
+
+<script lang="ts">
+type EChartsOption = echarts.ComposeOption<
+  | ToolboxComponentOption
+  | TooltipComponentOption
+  | GridComponentOption
+  | DataZoomComponentOption
+  | LineSeriesOption
+>;
 var option: EChartsOption;
+var myChart: EChartsType;
+var chartDom: HTMLElement;
 
 function func(x: number) {
   x /= 10;
@@ -75,6 +90,7 @@ function generateData() {
 }
 
 option = {
+  backgroundColor: '',
   animation: false,
   grid: {
     top: 40,
@@ -154,28 +170,20 @@ option = {
     }
   ]
 };
-
-onMounted(() => {
-  var chartDom = document.getElementById(props.container) as HTMLElement
-  var myChart = echarts.init(chartDom);
-  option && myChart.setOption(option);
-})
-
-</script>
-
-<script lang="ts">
+function darkMode(isDark: boolean) {
+  myChart.dispose();
+  if (isDark == true)
+    myChart = echarts.init(chartDom, 'dark');
+  else
+    myChart = echarts.init(chartDom);
+  myChart.setOption(option);
+}
 export default {
   name: "OSChart",
+  darkMode,
   props2: {
     msg: String,
     option: Object
-  },
-  darkMode(isDark: boolean) {
-    let chartDom1 = document.getElementById(this.container) as HTMLElement
-    if (isDark)
-      var chart = echarts.init(chartDom1, 'dark');
-    else
-      var chart = echarts.init(chartDom1);
   }
 }
 

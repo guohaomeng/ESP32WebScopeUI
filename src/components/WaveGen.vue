@@ -51,10 +51,13 @@ import {
 } from 'element-plus'
 
 import { reactive } from 'vue'
-import { number } from "echarts/core";
+import WaveGenChart from './WaveGenChart.vue'
 
 defineProps<{ msg: string }>();
 
+</script>
+
+<script lang="ts">
 const formSize = ref('large')
 const labelPosition = ref('right')
 
@@ -73,6 +76,7 @@ const form = reactive({
 })
 
 const onSubmit = () => {
+  WaveGenChart.refreshData();
   console.log('submit!')
 }
 const freqChange = (value: number) => {
@@ -89,17 +93,13 @@ const uMaxValueChange = (value: number) => {
 const biasChange = (value: number) => {
   console.log(value);
 }
-
-</script>
-
-<script lang="ts">
 export default {
   name: "WaveGen",
-  waveType: String,
-  freq: number,
-  duty: number,
-  uMaxValue: number,
-  biasVoltage: number,
+  waveType,
+  freq,
+  duty,
+  uMaxValue,
+  biasVoltage,
   props1: {
     msg: String
   }
