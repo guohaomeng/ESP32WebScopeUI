@@ -12,7 +12,8 @@
       <el-col :span="12">
         <el-row justify="end" style="height:32px;">
           <el-form-item label="连接设备" style="margin-right: 20px;">
-            <el-switch v-model="isConnected" @change="connectDevice()" inline-prompt active-text="开" inactive-text="关" />
+            <el-switch v-model="isConnected" @change="connectDevice()" inline-prompt active-text="开"
+              inactive-text="关" />
           </el-form-item>
           <el-form-item label="深色模式" style="margin-right: 20px;">
             <el-switch v-model="switchVal" @change="toggleDark(), UseDarkMode()" inline-prompt active-text="开"
@@ -63,8 +64,25 @@ function UseDarkMode() {
   OSChart.darkMode(isDark.value);
 };
 function connectDevice() {
-  console.log("连接设备");
+  if (isConnected.value == true) {
+    console.log("连接设备");
+    socket.init(receiveMessage);
+  }
+  else {
+    console.log("断开连接");
+    socket.close();
+  }
 }
+function receiveMessage(message: any) {
+  if (message.data[0] == '{') {
+    var data = JSON.parse(message.data);
+    OSChart.refreshData(data);
+  } else {
+    console.log(message.data);
+  }
+
+}
+
 onMounted(() => {
   UseDarkMode();
   switchVal = ref(isDark.value);
@@ -75,6 +93,8 @@ onMounted(() => {
 import WaveGen from './components/WaveGen.vue'
 import WaveGenChart from './components/WaveGenChart.vue'
 import OSChart from './components/OSChart.vue'
+import socket from './script/websocket'
+
 
 export default {
   name: 'App',

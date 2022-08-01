@@ -2,11 +2,12 @@
   <div :style="`width:${width}px;height:${height}px;`" :id="container" class="OSChart"></div>
   <div class="OSCForm">
     <el-form-item size="large">
-        <el-button type="primary" @click="OSCRun" style="width: 45%; margin-right: 5%;">运行</el-button>
-        <el-button @click="OSCStop" style="width: 45%; margin-left: 5%;">停止</el-button>
-      </el-form-item>
+      <el-button type="primary" @click="OSCRun" style="width: 45%; margin-right: 5%;">运行</el-button>
+      <el-button @click="OSCStop" style="width: 45%; margin-left: 5%;">停止</el-button>
+    </el-form-item>
     <el-form-item size="large" label="采样频率/Hz">
-      <el-input-number v-model="sampleRate" @change="sampleRateChange(sampleRate)" :min="1000" :max="128000" :step="1000" step-strictly label="采样频率/Hz">
+      <el-input-number v-model="sampleRate" @change="sampleRateChange(sampleRate)" :min="1000" :max="128000"
+        :step="1000" step-strictly label="采样频率/Hz">
       </el-input-number>
     </el-form-item>
   </div>
@@ -29,12 +30,14 @@ import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 import { onMounted } from 'vue';
 import { EChartsType } from 'echarts/core';
+import socket from '../script/websocket'
 
 import { ref } from "vue";
 import {
   ElFormItem,
   ElInputNumber,
   ElButton,
+  ElMessage
 } from 'element-plus'
 
 echarts.use([
@@ -93,15 +96,19 @@ var myChart: EChartsType;
 var chartDom: HTMLElement;
 
 let isRun = true;
+var OSCData = new Array();
 const sampleRate = ref(8000);
 const sampleRateChange = (value: number) => {
-  console.log(value);
+  console.log("R" + value + "\n");
+  sendData("R" + value);
 }
-function OSCRun(){
+function OSCRun() {
   isRun = true;
+  sendData("CT");
 };
-function OSCStop(){
+function OSCStop() {
   isRun = false;
+  sendData("CF");
 };
 function func(x: number) {
   x /= 10;
@@ -110,8 +117,15 @@ function func(x: number) {
 
 function generateData() {
   let data = [];
-  for (let i = 0; i <= 300; i += 1) {
-    data.push([i, func(i)]);
+  if (OSCData.length < 10) {
+    for (var i = 0; i < 256; i++) {
+      OSCData[i] = 0;
+      data.push([i, OSCData[i]]);
+    }
+  } else {
+    for (var i = 0; i < 256; i++) {
+      data.push([i, OSCData[i]]);
+    }
   }
   return data;
 }
@@ -149,7 +163,7 @@ option = {
     }
   },
   xAxis: {
-    name: 'x',
+    name: 'Div',
     min: 0,
     max: 256,
     minorTick: {
@@ -160,9 +174,9 @@ option = {
     }
   },
   yAxis: {
-    name: 'y',
-    min: -5,
-    max: 5,
+    name: '电压/V',
+    min: -0.2,
+    max: 3.5,
     minorTick: {
       show: true
     },
@@ -174,18 +188,18 @@ option = {
     {
       show: true,
       type: 'inside',
-      filterMode: 'filter',
+      filterMode: 'none',
       xAxisIndex: [0],
-      startValue: -20,
-      endValue: 20
+      startValue: 0,
+      endValue: 40
     },
     {
       show: true,
       type: 'inside',
-      filterMode: 'empty',
+      filterMode: 'none',
       yAxisIndex: [0],
-      startValue: -20,
-      endValue: 20
+      startValue: -1,
+      endValue: 5
     }
   ],
   series: [
@@ -205,9 +219,38 @@ function darkMode(isDark: boolean) {
     myChart = echarts.init(chartDom);
   myChart.setOption(option);
 }
+
+const sendData = (data: string) => {
+  if (socket.socket_open) {
+    socket.send(data);
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '请先建立连接',
+      duration: 0,
+      center: true,
+      grouping: true,
+      showClose: true
+    })
+  }
+}
+function refreshData(message: any) {
+  if (isRun) {
+    OSCData = [];
+    OSCData = message.a;
+    myChart.setOption({
+      series: [
+        {
+          data: generateData()
+        }
+      ]
+    });
+  }
+}
 export default {
   name: "OSChart",
   darkMode,
+  refreshData,
   props2: {
     msg: String,
     option: Object
@@ -220,6 +263,7 @@ export default {
 .OSChart {
   margin: 0 auto;
 }
+
 .OSCForm {
   width: 50%;
   margin: 0 auto;

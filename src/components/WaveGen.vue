@@ -5,7 +5,7 @@
     <!-- 表单1 -->
     <el-form ref="form" :model="form" label-width="auto" :size="formSize" :label-position="labelPosition">
       <el-form-item label="波形选择">
-        <el-select v-model="waveType" placeholder="请选择波形">
+        <el-select v-model="waveType" @change="waveTypeChange(waveType)" placeholder="请选择波形">
           <el-option label="正弦波" value="1"></el-option>
           <el-option label="方波" value="2"></el-option>
           <el-option label="锯齿波" value="3"></el-option>
@@ -43,8 +43,7 @@ import {
   ElButton,
   ElOption,
   ElInputNumber,
-  ElRow,
-  ElCol,
+  ElMessage,
   ElSelect,
   ElSlider,
   ElSwitch,
@@ -52,6 +51,7 @@ import {
 
 import { reactive } from 'vue'
 import WaveGenChart from './WaveGenChart.vue'
+import socket from '../script/websocket'
 
 defineProps<{ msg: string }>();
 
@@ -75,23 +75,47 @@ const form = reactive({
 
 })
 
+const sendData = (data: string) => {
+  if (socket.socket_open) {
+    socket.send(data);
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '请先建立连接',
+      duration: 0,
+      center: true,
+      grouping: true,
+      showClose: true
+    })
+  }
+}
+
 const onSubmit = () => {
   WaveGenChart.refreshData();
   console.log('submit!')
 }
+const waveTypeChange = (value: string) => {
+  console.log("W" + value);
+  form.waveType = value;
+  sendData("W" + value);
+}
 const freqChange = (value: number) => {
-  console.log(value);
+  console.log("F" + value);
   form.freq = value;
+  sendData("F" + value);
 }
 const dutyChange = (value: number) => {
   console.log(value);
   form.duty = value;
+  sendData("D"+value);
 }
 const uMaxValueChange = (value: number) => {
   console.log(value);
+  sendData("U"+value);
 }
 const biasChange = (value: number) => {
   console.log(value);
+  sendData("B"+value);
 }
 export default {
   name: "WaveGen",
