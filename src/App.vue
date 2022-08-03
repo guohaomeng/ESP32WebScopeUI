@@ -56,8 +56,8 @@ import {
 import { useDark, useToggle } from '@vueuse/core'
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
-let switchVal = ref(isDark.value)
-let isConnected = ref(false)
+const switchVal = ref(isDark.value)
+const isConnected = ref(false)
 
 function UseDarkMode() {
   WaveGenChart.darkMode(isDark.value);
@@ -74,9 +74,13 @@ function connectDevice() {
   }
 }
 function receiveMessage(message: any) {
-  if (message.data[0] == '{') {
+  if (message.data[0] == '{' && message.data[2] == 'a') {
     var data = JSON.parse(message.data);
     OSChart.refreshData(data);
+  } else if(message.data[0] == '{' && message.data[2] == 'p'){
+    var data = JSON.parse(message.data);
+    console.log(data.param);
+    WaveGen.changeParam(data.param);
   } else {
     console.log(message.data);
   }
@@ -85,7 +89,7 @@ function receiveMessage(message: any) {
 
 onMounted(() => {
   UseDarkMode();
-  switchVal = ref(isDark.value);
+  switchVal.value = isDark.value;
 });
 
 </script>

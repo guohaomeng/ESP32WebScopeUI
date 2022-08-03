@@ -29,7 +29,7 @@
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit" style="width: 45%; margin-right: 5%;">立即设置</el-button>
-        <el-button style="width: 45%; margin-left: 5%;">取消</el-button>
+        <el-button @click="getParam" style="width: 45%; margin-left: 5%;">获取参数</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -72,7 +72,6 @@ const form = reactive({
   duty: ref(50),
   uMaxValue: ref(3.3),
   biasVoltage: ref(1.65),
-
 })
 
 const sendData = (data: string) => {
@@ -93,6 +92,18 @@ const sendData = (data: string) => {
 const onSubmit = () => {
   WaveGenChart.refreshData();
   console.log('submit!')
+}
+const getParam = () => {
+  sendData("GP");
+  console.log('获取参数');
+}
+const changeParam = (param: Object) => {
+  uMaxValue.value = param.U;
+  biasVoltage.value = param.B;
+  duty.value = param.D;
+  freq.value = param.F;
+  waveType.value = String(param.W);
+  WaveGenChart.refreshData();
 }
 const waveTypeChange = (value: string) => {
   console.log("W" + value);
@@ -124,6 +135,7 @@ export default {
   duty,
   uMaxValue,
   biasVoltage,
+  changeParam,
   props1: {
     msg: String
   }
