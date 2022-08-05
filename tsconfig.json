@@ -2,6 +2,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "target": "esnext",
+    "types": ["element-plus/global"],
     "useDefineForClassFields": true,
     "module": "esnext",
     "moduleResolution": "node",
