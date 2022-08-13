@@ -41,16 +41,35 @@
   margin-bottom: 0px;
 }
 </style>
+
+<script lang="ts">
+
+export default {
+  name: 'App',
+  components: {
+    //2.声明或注册组件
+    WaveGen,
+    WaveGenChart,
+    OSChart,
+  }
+}
+
+</script>
+
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onMounted } from 'vue'
-import {
-  ElNotification,
-  ElRow,
-  ElCol,
-  ElSwitch,
-  ElFormItem
-} from 'element-plus'
+import WaveGen from './components/WaveGen.vue'
+import WaveGenChart from './components/WaveGenChart.vue'
+import OSChart from './components/OSChart.vue'
+import socket from './script/websocket'
+// import {
+//   ElNotification,
+//   ElRow,
+//   ElCol,
+//   ElSwitch,
+//   ElFormItem
+// } from 'element-plus'
 
 // 自动切换暗黑模式
 import { useDark, useToggle } from '@vueuse/core'
@@ -91,24 +110,5 @@ onMounted(() => {
   UseDarkMode();
   switchVal.value = isDark.value;
 });
-
-</script>
-<script lang="ts">
-import WaveGen from './components/WaveGen.vue'
-import WaveGenChart from './components/WaveGenChart.vue'
-import OSChart from './components/OSChart.vue'
-import socket from './script/websocket'
-
-
-export default {
-  name: 'App',
-  components: {
-    //2.声明或注册组件
-    WaveGen,
-    WaveGenChart,
-    OSChart
-  }
-}
-
 
 </script>

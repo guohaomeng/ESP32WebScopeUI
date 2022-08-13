@@ -13,77 +13,8 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import * as echarts from 'echarts/core';
-import {
-  ToolboxComponent,
-  ToolboxComponentOption,
-  TooltipComponent,
-  TooltipComponentOption,
-  GridComponent,
-  GridComponentOption,
-  DataZoomComponent,
-  DataZoomComponentOption
-} from 'echarts/components';
-import { LineChart, LineSeriesOption } from 'echarts/charts';
-import { UniversalTransition } from 'echarts/features';
-import { CanvasRenderer } from 'echarts/renderers';
-import { onMounted } from 'vue';
-import { EChartsType } from 'echarts/core';
-import socket from '../script/websocket'
-
-import { ref } from "vue";
-import {
-  ElFormItem,
-  ElInputNumber,
-  ElButton,
-  ElMessage
-} from 'element-plus'
-
-echarts.use([
-  ToolboxComponent,
-  TooltipComponent,
-  GridComponent,
-  DataZoomComponent,
-  LineChart,
-  CanvasRenderer,
-  UniversalTransition
-]);
-
-
-// 2.定义传入的参数
-const props = defineProps({
-  width: {
-    type: String,
-    default: "550",
-  },
-  height: {
-    type: String,
-    default: "350",
-  },
-  //首次加载
-  isFirst: {
-    type: Boolean,
-    default: false,
-  },
-  //组件唯一值
-  container: {
-    type: String,
-    default: "OSCChart",
-  },
-});
-
-
-
-onMounted(() => {
-  chartDom = document.getElementById(props.container) as HTMLElement
-  myChart = echarts.init(chartDom);
-  option && myChart.setOption(option);
-})
-
-</script>
-
 <script lang="ts">
+import { ref } from "vue";
 type EChartsOption = echarts.ComposeOption<
   | ToolboxComponentOption
   | TooltipComponentOption
@@ -258,6 +189,78 @@ export default {
 }
 
 </script>
+
+
+<script lang="ts" setup>
+import * as echarts from 'echarts/core';
+import {
+  ToolboxComponent,
+  ToolboxComponentOption,
+  TooltipComponent,
+  TooltipComponentOption,
+  GridComponent,
+  GridComponentOption,
+  DataZoomComponent,
+  DataZoomComponentOption
+} from 'echarts/components';
+import { LineChart, LineSeriesOption } from 'echarts/charts';
+import { UniversalTransition } from 'echarts/features';
+import { CanvasRenderer } from 'echarts/renderers';
+import { onMounted } from 'vue';
+import { EChartsType } from 'echarts/core';
+import socket from '../script/websocket'
+
+
+import {
+  // ElFormItem,
+  // ElInputNumber,
+  // ElButton,
+  ElMessage
+} from 'element-plus'
+
+echarts.use([
+  ToolboxComponent,
+  TooltipComponent,
+  GridComponent,
+  DataZoomComponent,
+  LineChart,
+  CanvasRenderer,
+  UniversalTransition
+]);
+
+
+// 2.定义传入的参数
+const props = defineProps({
+  width: {
+    type: String,
+    default: "550",
+  },
+  height: {
+    type: String,
+    default: "350",
+  },
+  //首次加载
+  isFirst: {
+    type: Boolean,
+    default: false,
+  },
+  //组件唯一值
+  container: {
+    type: String,
+    default: "OSCChart",
+  },
+});
+
+
+
+onMounted(() => {
+  chartDom = document.getElementById(props.container) as HTMLElement
+  myChart = echarts.init(chartDom);
+  option && myChart.setOption(option);
+})
+
+</script>
+
 
 <style>
 .OSChart {

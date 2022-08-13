@@ -3,7 +3,7 @@
 
   <div class="waveGen">
     <!-- 表单1 -->
-    <el-form ref="form" :model="form" label-width="auto" :size="formSize" :label-position="labelPosition">
+    <el-form :model="form" label-width="auto" :size="formSize" :label-position="labelPosition">
       <el-form-item label="波形选择">
         <el-select v-model="waveType" @change="waveTypeChange(waveType)" placeholder="请选择波形">
           <el-option label="正弦波" value="1"></el-option>
@@ -35,29 +35,8 @@
   </div>
 
 </template>
-<script setup lang="ts">
-import { ref } from "vue";
-import {
-  ElForm,
-  ElFormItem,
-  ElButton,
-  ElOption,
-  ElInputNumber,
-  ElMessage,
-  ElSelect,
-  ElSlider,
-  ElSwitch,
-} from 'element-plus'
-
-import { reactive } from 'vue'
-import WaveGenChart from './WaveGenChart.vue'
-import socket from '../script/websocket'
-
-defineProps<{ msg: string }>();
-
-</script>
-
 <script lang="ts">
+import { ref } from "vue";
 const formSize = ref('large')
 const labelPosition = ref('right')
 
@@ -97,7 +76,7 @@ const getParam = () => {
   sendData("GP");
   console.log('获取参数');
 }
-const changeParam = (param: Object) => {
+const changeParam = (param: any) => {
   uMaxValue.value = param.U;
   biasVoltage.value = param.B;
   duty.value = param.D;
@@ -141,6 +120,28 @@ export default {
   }
 }
 </script>
+<script setup lang="ts">
+import {
+  // ElForm,
+  // ElFormItem,
+  // ElButton,
+  // ElOption,
+  // ElInputNumber,
+  ElMessage,
+  // ElSelect,
+  // ElSlider,
+  // ElSwitch,
+} from 'element-plus'
+
+import { reactive } from 'vue'
+import WaveGenChart from './WaveGenChart.vue'
+import socket from '../script/websocket'
+
+defineProps<{ msg: string }>();
+
+</script>
+
+
 
 <style>
 .waveGen {

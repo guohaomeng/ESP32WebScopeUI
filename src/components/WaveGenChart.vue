@@ -3,56 +3,6 @@
 
 </template>
 
-<script lang="ts" setup>
-import * as echarts from 'echarts/core';
-import {
-  ToolboxComponent,
-  ToolboxComponentOption,
-  TooltipComponent,
-  TooltipComponentOption,
-  GridComponent,
-  GridComponentOption,
-  DataZoomComponent,
-  DataZoomComponentOption
-} from 'echarts/components';
-import { LineChart, LineSeriesOption } from 'echarts/charts';
-import { UniversalTransition } from 'echarts/features';
-import { CanvasRenderer } from 'echarts/renderers';
-import { onMounted } from 'vue';
-import WaveGenData from './WaveGen.vue'
-import { EChartsType } from 'echarts/core';
-
-// 定义传入的参数
-const props = defineProps({
-  width: {
-    type: String,
-    default: "550",
-  },
-  height: {
-    type: String,
-    default: "350",
-  },
-  //首次加载
-  isFirst: {
-    type: Boolean,
-    default: false,
-  },
-  //组件唯一值
-  container: {
-    type: String,
-    default: "WaveGenChart",
-  },
-});
-
-onMounted(() => {
-  wave_gen(1);
-  chartDom = document.getElementById(props.container) as HTMLElement
-  myChart = echarts.init(chartDom);
-  option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
-  option && myChart.setOption(option);
-});
-</script>
-
 <script lang="ts">
 
 echarts.use([
@@ -253,7 +203,7 @@ function darkMode(isDark: boolean) {
 export default {
   name: "WaveGenChart",
   option,
-  myChart,
+  //myChart,
   uMaxValue,
   offSetValue,
   duty,
@@ -263,6 +213,56 @@ export default {
 }
 
 </script>
+<script lang="ts" setup>
+import * as echarts from 'echarts/core';
+import {
+  ToolboxComponent,
+  ToolboxComponentOption,
+  TooltipComponent,
+  TooltipComponentOption,
+  GridComponent,
+  GridComponentOption,
+  DataZoomComponent,
+  DataZoomComponentOption
+} from 'echarts/components';
+import { LineChart, LineSeriesOption } from 'echarts/charts';
+import { UniversalTransition } from 'echarts/features';
+import { CanvasRenderer } from 'echarts/renderers';
+import { onMounted } from 'vue';
+import WaveGenData from './WaveGen.vue'
+import { EChartsType } from 'echarts/core';
+
+// 定义传入的参数
+const props = defineProps({
+  width: {
+    type: String,
+    default: "550",
+  },
+  height: {
+    type: String,
+    default: "350",
+  },
+  //首次加载
+  isFirst: {
+    type: Boolean,
+    default: false,
+  },
+  //组件唯一值
+  container: {
+    type: String,
+    default: "WaveGenChart",
+  },
+});
+
+onMounted(() => {
+  wave_gen(1);
+  chartDom = document.getElementById(props.container) as HTMLElement
+  myChart = echarts.init(chartDom);
+  //option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
+  option && myChart.setOption(option);
+});
+</script>
+
 
 
 <style>
