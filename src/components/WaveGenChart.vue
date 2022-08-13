@@ -26,90 +26,7 @@ type EChartsOption = echarts.ComposeOption<
 var option: EChartsOption;
 var myChart: EChartsType;
 var chartDom: HTMLElement;
-option = {
-  backgroundColor: '',
-  animation: false,
-  grid: {
-    top: 40,
-    left: 50,
-    right: 40,
-    bottom: 50
-  },
-  tooltip: {
-    show: true,
-    trigger: 'axis',
-    axisPointer: {
-      type: 'cross'
-    }
-  },
-  toolbox: {
-    show: true,
-    feature: {
-      dataZoom: {
-        yAxisIndex: 'none'
-      },
-      dataView: {
-        readOnly: false
-      },
-      magicType: {
-        type: ['line', 'line']
-      },
-      restore: {},
-      saveAsImage: {}
-    }
-  },
-  xAxis: {
-    name: '波形索引',
-    min: 0,
-    max: 256,
-    minorTick: {
-      show: true
-    },
-    minorSplitLine: {
-      show: true
-    }
-  },
-  yAxis: {
-    name: '输出电压/V',
-    min: -0.2,
-    max: 3.5,
-    minorTick: {
-      show: true
-    },
-    minorSplitLine: {
-      show: true
-    }
-  },
-  dataZoom: [
-    {
-      show: true,
-      type: 'inside',
-      filterMode: 'none',
-      xAxisIndex: [0],
-      startValue: 0,
-      endValue: 300,
-      moveOnMouseWheel: 'alt'
-    },
-    {
-      show: true,
-      type: 'inside',
-      // disabled: true,
-      // zoomLock: true,
-      filterMode: 'none',
-      yAxisIndex: [0],
-      startValue: -1,
-      endValue: 5
-    }
-  ],
-  series: [
-    {
-      type: 'line',
-      showSymbol: false,
-      clip: true,
-      data: []
-    }
-  ]
-};
+
 
 // 绘制预览波形相关变量及函数
 var start = true;
@@ -200,6 +117,91 @@ function darkMode(isDark: boolean) {
   refreshData();
 }
 
+option = {
+  backgroundColor: '',
+  animation: false,
+  grid: {
+    top: 40,
+    left: 50,
+    right: 40,
+    bottom: 50
+  },
+  tooltip: {
+    show: true,
+    trigger: 'axis',
+    axisPointer: {
+      type: 'cross'
+    }
+  },
+  toolbox: {
+    show: true,
+    feature: {
+      dataZoom: {
+        yAxisIndex: 'none'
+      },
+      dataView: {
+        readOnly: false
+      },
+      magicType: {
+        type: ['line', 'line']
+      },
+      restore: {},
+      saveAsImage: {}
+    }
+  },
+  xAxis: {
+    name: '波形索引',
+    min: 0,
+    max: 256,
+    minorTick: {
+      show: true
+    },
+    minorSplitLine: {
+      show: true
+    }
+  },
+  yAxis: {
+    name: '输出电压/V',
+    min: -0.2,
+    max: 3.5,
+    minorTick: {
+      show: true
+    },
+    minorSplitLine: {
+      show: true
+    }
+  },
+  dataZoom: [
+    {
+      show: true,
+      type: 'inside',
+      filterMode: 'none',
+      xAxisIndex: [0],
+      startValue: 0,
+      endValue: 300,
+      moveOnMouseWheel: 'alt'
+    },
+    {
+      show: true,
+      type: 'inside',
+      // disabled: true,
+      // zoomLock: true,
+      filterMode: 'none',
+      yAxisIndex: [0],
+      startValue: -1,
+      endValue: 5
+    }
+  ],
+  series: [
+    {
+      type: 'line',
+      showSymbol: false,
+      clip: true,
+      data: generateData()
+    }
+  ]
+};
+
 export default {
   name: "WaveGenChart",
   option,
@@ -258,7 +260,7 @@ onMounted(() => {
   wave_gen(1);
   chartDom = document.getElementById(props.container) as HTMLElement
   myChart = echarts.init(chartDom);
-  option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
+  //option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
   option && myChart.setOption(option);
 });
 </script>
