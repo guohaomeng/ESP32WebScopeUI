@@ -39,7 +39,6 @@
 import { ref } from "vue";
 const formSize = ref('large')
 const labelPosition = ref('right')
-
 const waveType = ref("1")
 const freq = ref(100)
 const duty = ref(50)
@@ -97,15 +96,16 @@ const freqChange = (value: number) => {
 const dutyChange = (value: number) => {
   console.log(value);
   form.duty = value;
-  sendData("D"+value);
+  sendData("D" + value);
 }
 const uMaxValueChange = (value: number) => {
   console.log(value);
-  sendData("U"+value);
+  form.uMaxValue = value;
+  sendData("U" + value);
 }
 const biasChange = (value: number) => {
   console.log(value);
-  sendData("B"+value);
+  sendData("B" + value);
 }
 export default {
   name: "WaveGen",
@@ -121,18 +121,7 @@ export default {
 }
 </script>
 <script setup lang="ts">
-import {
-  // ElForm,
-  // ElFormItem,
-  // ElButton,
-  // ElOption,
-  // ElInputNumber,
-  ElMessage,
-  // ElSelect,
-  // ElSlider,
-  // ElSwitch,
-} from 'element-plus'
-
+import { ElMessage } from 'element-plus'
 import { reactive } from 'vue'
 import WaveGenChart from './WaveGenChart.vue'
 import socket from '../script/websocket'
@@ -140,8 +129,6 @@ import socket from '../script/websocket'
 defineProps<{ msg: string }>();
 
 </script>
-
-
 
 <style>
 .waveGen {

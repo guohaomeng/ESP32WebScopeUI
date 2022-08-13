@@ -26,8 +26,6 @@ type EChartsOption = echarts.ComposeOption<
 var option: EChartsOption;
 var myChart: EChartsType;
 var chartDom: HTMLElement;
-
-
 // 绘制预览波形相关变量及函数
 var start = true;
 let uMaxValue = 3.3;         //峰峰值
@@ -35,7 +33,7 @@ let offSetValue = 1.65       //偏置电压
 let duty = 50;               //占空比%(方波)
 let wave = 1;                //波形种类
 let samplePerCycle = 256;
-//定义板载8位DAC输出的对应值
+// 定义波形预览数组
 var waveTab1 = new Array();
 var waveTab = new Array();
 
@@ -205,7 +203,6 @@ option = {
 export default {
   name: "WaveGenChart",
   option,
-  //myChart,
   uMaxValue,
   offSetValue,
   duty,
@@ -260,7 +257,6 @@ onMounted(() => {
   wave_gen(1);
   chartDom = document.getElementById(props.container) as HTMLElement
   myChart = echarts.init(chartDom);
-  //option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
   option && myChart.setOption(option);
 });
 </script>

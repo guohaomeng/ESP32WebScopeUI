@@ -41,7 +41,6 @@ function OSCStop() {
   isRun = false;
   sendData("CF");
 };
-
 function generateData() {
   let data = [];
   if (OSCData.length < 10) {
@@ -56,7 +55,6 @@ function generateData() {
   }
   return data;
 }
-
 option = {
   backgroundColor: '',
   animation: false,
@@ -154,7 +152,6 @@ function darkMode(isDark: boolean) {
     ]
   });
 }
-
 const sendData = (data: string) => {
   if (socket.socket_open) {
     socket.send(data);
@@ -195,10 +192,7 @@ export default {
     option: Object
   }
 }
-
 </script>
-
-
 <script lang="ts" setup>
 import * as echarts from 'echarts/core';
 import {
@@ -218,7 +212,6 @@ import { onMounted } from 'vue';
 import { EChartsType } from 'echarts/core';
 import socket from '../script/websocket'
 
-
 import {
   // ElFormItem,
   // ElInputNumber,
@@ -235,7 +228,6 @@ echarts.use([
   CanvasRenderer,
   UniversalTransition
 ]);
-
 
 // 2.定义传入的参数
 const props = defineProps({
@@ -259,8 +251,6 @@ const props = defineProps({
   },
 });
 
-
-
 onMounted(() => {
   chartDom = document.getElementById(props.container) as HTMLElement
   myChart = echarts.init(chartDom);
@@ -268,7 +258,6 @@ onMounted(() => {
 })
 
 </script>
-
 
 <style>
 .OSChart {

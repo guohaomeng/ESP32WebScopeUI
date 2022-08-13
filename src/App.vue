@@ -31,19 +31,8 @@
     </el-row>
   </div>
 </template>
-<style>
-.LeftMain {
-  width: 100%;
-  height: auto;
-}
-
-.el-row {
-  margin-bottom: 0px;
-}
-</style>
 
 <script lang="ts">
-
 export default {
   name: 'App',
   components: {
@@ -53,9 +42,7 @@ export default {
     OSChart,
   }
 }
-
 </script>
-
 <script setup lang="ts">
 import { ref } from 'vue'
 import { onMounted } from 'vue'
@@ -63,13 +50,6 @@ import WaveGen from './components/WaveGen.vue'
 import WaveGenChart from './components/WaveGenChart.vue'
 import OSChart from './components/OSChart.vue'
 import socket from './script/websocket'
-// import {
-//   ElNotification,
-//   ElRow,
-//   ElCol,
-//   ElSwitch,
-//   ElFormItem
-// } from 'element-plus'
 
 // 自动切换暗黑模式
 import { useDark, useToggle } from '@vueuse/core'
@@ -96,7 +76,7 @@ function receiveMessage(message: any) {
   if (message.data[0] == '{' && message.data[2] == 'a') {
     var data = JSON.parse(message.data);
     OSChart.refreshData(data);
-  } else if(message.data[0] == '{' && message.data[2] == 'p'){
+  } else if (message.data[0] == '{' && message.data[2] == 'p') {
     var data = JSON.parse(message.data);
     console.log(data.param);
     WaveGen.changeParam(data.param);
@@ -111,5 +91,15 @@ onMounted(() => {
   UseDarkMode();
   switchVal.value = isDark.value;
 });
-
 </script>
+
+<style>
+.LeftMain {
+  width: 100%;
+  height: auto;
+}
+
+.el-row {
+  margin-bottom: 0px;
+}
+</style>
