@@ -41,10 +41,6 @@ function OSCStop() {
   isRun = false;
   sendData("CF");
 };
-function func(x: number) {
-  x /= 10;
-  return Math.sin(x) * 3.3;
-}
 
 function generateData() {
   let data = [];
@@ -149,6 +145,14 @@ function darkMode(isDark: boolean) {
   else
     myChart = echarts.init(chartDom);
   myChart.setOption(option);
+  // 不知道为啥执行完上面一行后data出错，因此有了下面这行
+  myChart.setOption({
+    series: [
+      {
+        data: generateData()
+      }
+    ]
+  });
 }
 
 const sendData = (data: string) => {
@@ -178,10 +182,14 @@ function refreshData(message: any) {
     });
   }
 }
+const changeParam = (param: any) => {
+  sampleRate.value = param.R;
+}
 export default {
   name: "OSChart",
   darkMode,
   refreshData,
+  changeParam,
   props2: {
     msg: String,
     option: Object

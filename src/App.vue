@@ -100,6 +100,7 @@ function receiveMessage(message: any) {
     var data = JSON.parse(message.data);
     console.log(data.param);
     WaveGen.changeParam(data.param);
+    OSChart.changeParam(data.param);
   } else {
     console.log(message.data);
   }

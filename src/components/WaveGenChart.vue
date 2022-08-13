@@ -258,7 +258,7 @@ onMounted(() => {
   wave_gen(1);
   chartDom = document.getElementById(props.container) as HTMLElement
   myChart = echarts.init(chartDom);
-  //option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
+  option.series[0].data = generateData(); // 搞不明白为啥报错，但能用
   option && myChart.setOption(option);
 });
 </script>
