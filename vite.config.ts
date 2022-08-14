@@ -6,6 +6,8 @@ import Inspect from 'vite-plugin-inspect'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import zip from 'vite-plugin-zip'
+import viteCompression from 'vite-plugin-compression'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -29,6 +31,17 @@ export default defineConfig({
       defaultLocale: 'zh-cn',
     }),
     Inspect(),
+    viteCompression({
+      verbose: true,
+      disable: false,
+      threshold: 10240,
+      algorithm: 'gzip',
+      ext: '.gz',
+    }),
+    zip({
+      dir: 'dist',
+      outputName: 'data'
+    }),
     AutoImport({
       resolvers: [ElementPlusResolver()],
     }),
@@ -38,7 +51,7 @@ export default defineConfig({
   ],
   base: "./",
   build: {
-    minify:"terser",
+    minify: "terser",
     terserOptions: {
       compress: {
         drop_console: true,
@@ -47,14 +60,14 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
-        chunkFileNames: 'static/js/[name].js',
-        entryFileNames: 'static/js/[name].js',
-        assetFileNames: 'static/[ext]/[name].[ext]',
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            return id.toString().split('node_modules/')[1].split('/')[0].toString();
-          }
-        }
+        chunkFileNames: 'js/[name].js',
+        entryFileNames: 'js/[name].js',
+        assetFileNames: '[ext]/[name].[ext]',
+        // manualChunks(id) {
+        //   if (id.includes('node_modules')) {
+        //     return id.toString().split('node_modules/')[1].split('/')[0].toString();
+        //   }
+        // }
       }
     }
   }
