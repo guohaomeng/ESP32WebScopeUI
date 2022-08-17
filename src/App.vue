@@ -2,30 +2,33 @@
   <div class="container" style="justify-content:normal;">
     <el-row>
       <!-- 左半屏幕 -->
-      <el-col :span="12">
+      <el-col :xs="24" :sm="24" :md="12">
         <div class="LeftMain">
           <WaveGen msg="波形发生器控制面板" />
           <WaveGenChart width="550" height="350" container="WaveGenChart"></WaveGenChart>
         </div>
       </el-col>
       <!-- 右半屏幕 -->
-      <el-col :span="12">
-        <el-row justify="end" style="height:32px;">
-          <el-form-item label="连接设备" style="margin-right: 20px;">
-            <el-switch v-model="isConnected" @change="connectDevice()" inline-prompt active-text="开"
-              inactive-text="关" />
-          </el-form-item>
-          <el-form-item label="深色模式" style="margin-right: 20px;">
-            <el-switch v-model="switchVal" @change="toggleDark(), UseDarkMode()" inline-prompt active-text="开"
-              inactive-text="关" />
-          </el-form-item>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <h2>ESP32示波器面板</h2>
-            <OSChart width="550" height="350" container="OSChart"></OSChart>
-          </el-col>
-        </el-row>
+      <el-col :xs="24" :sm="24" :md="12">
+        <div class="RightMain">
+          <el-row justify="end" style="height:32px;">
+            <el-form-item label="连接设备" style="margin-right: 20px;">
+              <el-switch v-model="isConnected" @change="connectDevice()" inline-prompt active-text="开"
+                inactive-text="关" />
+            </el-form-item>
+            <el-form-item label="深色模式" style="margin-right: 20px;">
+              <el-switch v-model="switchVal" @change="toggleDark(), UseDarkMode()" inline-prompt active-text="开"
+                inactive-text="关" />
+            </el-form-item>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <h2>ESP32示波器面板</h2>
+              <OSChart width="550" height="350" container="OSChart"></OSChart>
+            </el-col>
+          </el-row>
+        </div>
+
 
       </el-col>
     </el-row>
@@ -96,6 +99,13 @@ onMounted(() => {
 <style>
 .LeftMain {
   width: 100%;
+  min-width: 550px;
+  height: auto;
+}
+
+.RightMain {
+  width: 100%;
+  min-width: 550px;
   height: auto;
 }
 

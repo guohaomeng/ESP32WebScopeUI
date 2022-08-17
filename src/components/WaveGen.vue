@@ -133,6 +133,7 @@ defineProps<{ msg: string }>();
 <style>
 .waveGen {
   width: 55%;
+  min-width: 360px;
   height: auto;
   margin: 0 auto;
   font-size: 2em;

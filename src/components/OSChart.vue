@@ -265,7 +265,10 @@ onMounted(() => {
 }
 
 .OSCForm {
-  width: 50%;
+  width: 55%;
+  height: auto;
   margin: 0 auto;
+  min-width: 360px;
+  font-size: 2em;
 }
 </style>

@@ -34,7 +34,7 @@ export default defineConfig({
     viteCompression({
       verbose: true,
       disable: false,
-      threshold: 10240,
+      threshold: 1,
       algorithm: 'gzip',
       ext: '.gz',
     }),
