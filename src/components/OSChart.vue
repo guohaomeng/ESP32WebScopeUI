@@ -1,15 +1,33 @@
 <template>
   <div :style="`width:${width}px;height:${height}px;`" :id="container" class="OSChart"></div>
   <div class="OSCForm">
-    <el-form-item size="large">
-      <el-button type="primary" @click="OSCRun" style="width: 45%; margin-right: 5%;">运行</el-button>
-      <el-button @click="OSCStop" style="width: 45%; margin-left: 5%;">停止</el-button>
-    </el-form-item>
-    <el-form-item size="large" label="采样频率/Hz">
-      <el-input-number v-model="sampleRate" @change="sampleRateChange(sampleRate)" :min="1000" :max="128000"
-        :step="1000" step-strictly label="采样频率/Hz">
-      </el-input-number>
-    </el-form-item>
+    <el-form label-width="auto">
+      <el-form-item size="large">
+        <el-button type="primary" @click="OSCRun" style="width: 45%; margin-right: 5%;">运行</el-button>
+        <el-button @click="OSCStop" style="width: 45%; margin-left: 5%;">停止</el-button>
+      </el-form-item>
+    </el-form>
+    <el-form label-width="auto">
+      <el-form-item size="large" label="采样频率/Hz">
+        <el-input-number v-model="sampleRate" @change="sampleRateChange(sampleRate)" :min="1000" :max="128000"
+          :step="1000" step-strictly label="采样频率/Hz">
+        </el-input-number>
+      </el-form-item>
+      <el-form-item size="large" label="取样间隔">
+        <el-input-number v-model="sampleStep" @change="sampleStepChange(sampleStep)" :min="1" :max="4" :step="1"
+          step-strictly label="取样间隔">
+        </el-input-number>
+      </el-form-item>
+      <el-form-item size="large" label="触发方式">
+        <el-radio-group v-model="triggerMode" @change="triggerModeChange(triggerMode)">
+          <el-radio :label="1">无</el-radio>
+          <el-radio :label="2">上升沿</el-radio>
+          <el-radio :label="3">下降沿</el-radio>
+          <el-radio disabled :label="4">单次</el-radio>
+          <el-radio disabled :label="5">自动</el-radio>
+        </el-radio-group>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
@@ -29,9 +47,19 @@ var chartDom: HTMLElement;
 let isRun = true;
 var OSCData = new Array();
 const sampleRate = ref(8000);
+const sampleStep = ref(2);
+const triggerMode = ref(1);
 const sampleRateChange = (value: number) => {
   console.log("R" + value + "\n");
   sendData("R" + value);
+}
+const sampleStepChange = (value: number) => {
+  console.log("S" + value + "\n");
+  sendData("S" + value);
+}
+const triggerModeChange = (value: number) => {
+  console.log("T" + value + "\n");
+  sendData("T" + value);
 }
 function OSCRun() {
   isRun = true;
