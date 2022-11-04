@@ -9,7 +9,7 @@
     </el-form>
     <el-form label-width="auto">
       <el-form-item size="large" label="采样频率/Hz">
-        <el-input-number v-model="sampleRate" @change="sampleRateChange(sampleRate)" :min="1000" :max="128000"
+        <el-input-number v-model="sampleRate" @change="sampleRateChange(sampleRate)" :min="1000" :max="550000"
           :step="1000" step-strictly label="采样频率/Hz">
         </el-input-number>
       </el-form-item>
@@ -23,8 +23,8 @@
           <el-radio :label="1">无</el-radio>
           <el-radio :label="2">上升沿</el-radio>
           <el-radio :label="3">下降沿</el-radio>
-          <el-radio disabled :label="4">单次</el-radio>
-          <el-radio disabled :label="5">自动</el-radio>
+          <el-radio :label="4">自动</el-radio>
+          <el-radio disabled :label="5">单次</el-radio>
         </el-radio-group>
       </el-form-item>
     </el-form>
@@ -46,9 +46,9 @@ var chartDom: HTMLElement;
 
 let isRun = true;
 var OSCData = new Array();
-const sampleRate = ref(8000);
-const sampleStep = ref(2);
-const triggerMode = ref(1);
+const sampleRate = ref(10000);
+const sampleStep = ref(1);
+const triggerMode = ref(3);
 const sampleRateChange = (value: number) => {
   console.log("R" + value + "\n");
   sendData("R" + value);
@@ -209,6 +209,8 @@ function refreshData(message: any) {
 }
 const changeParam = (param: any) => {
   sampleRate.value = param.R;
+  sampleStep.value = param.S;
+  triggerMode.value = param.T;
 }
 export default {
   name: "OSChart",
